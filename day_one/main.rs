@@ -5,9 +5,8 @@ fn main() {
     // Open the input file
     let file = File::open("input.tx").unwrap();
     let reader = BufReader::new(file);
-    let mut max_calories = 0;
-    let mut current_calories = 0;
     let mut calories = Vec::new();
+    let mut current_calories = 0;
     // Parse the input
     for line in reader.lines() {
         let line = line.unwrap();
@@ -20,12 +19,12 @@ fn main() {
         }
     }
     calories.push(current_calories);
-    // Find the elf carrying the most calories
-    for c in calories {
-        if c > max_calories {
-            max_calories = c;
-        }
-    }
+    // Sort the calories in descending order
+    calories.sort_by(|a, b| b.cmp(a));
+    // Take the top three elements
+    let top_three: Vec<i32> = calories.into_iter().take(3).collect();
+    // Calculate the total calories
+    let total_calories: i32 = top_three.into_iter().sum();
     // Print the result
-    println!("{}", max_calories);
+    println!("{}", total_calories);
 }
