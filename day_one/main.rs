@@ -1,39 +1,31 @@
-use std::io;
-use std::iter::FromIterator;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 fn main() {
-    // Read the input from the user
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-
-    // Parse the input into a Vec of Vecs of i32s
-    let mut calories: Vec<Vec<i32>> = Vec::new();
-    let mut current_elf_calories = Vec::new();
-    for line in input.lines() {
-        if line.trim().is_empty() {
-            // End of input for current elf
-            calories.push(current_elf_calories);
-            current_elf_calories = Vec::new();
+    // Open the input file
+    let file = File::open("input.txt").unwrap();
+    let reader = BufReader::new(file);
+    let mut max_calories = 0;
+    let mut current_calories = 0;
+    let mut calories = Vec::new();
+    // Parse the input
+    for line in reader.lines() {
+        let line = line.unwrap();
+        if line.is_empty() {
+            calories.push(current_calories);
+            current_calories = 0;
         } else {
-            // Parse the calorie count for the current elf
-            let calorie_count = line.parse().unwrap();
-            current_elf_calories.push(calorie_count);
+            let c: i32 = line.parse().unwrap();
+            current_calories += c;
         }
     }
-    if !current_elf_calories.is_empty() {
-        // Add the remaining calories for the last elf
-        calories.push(current_elf_calories);
+    calories.push(current_calories);
+    // Find the elf carrying the most calories
+    for c in calories {
+        if c > max_calories {
+            max_calories = c;
+        }
     }
-
-    // Calculate the total calories for each elf
-    let elf_calorie_totals: Vec<i32> = calories
-        .iter()
-        .map(|calories| calories.iter().sum())
-        .collect();
-
-    // Find the elf with the most calories
-    let max_calories = elf_calorie_totals.iter().max().unwrap();
-
-    // Print the total calories for the elf with the most calories
+    // Print the result
     println!("{}", max_calories);
 }
