@@ -3,7 +3,7 @@ use std::io::{BufRead, BufReader};
 
 fn main() {
     // Open the input file
-    let file = File::open("input.txt").unwrap();
+    let file = File::open("input.tx").unwrap();
     let reader = BufReader::new(file);
     let mut max_calories = 0;
     let mut current_calories = 0;
