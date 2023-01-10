@@ -1,8 +1,16 @@
+use std::fs::File;
+use std::io::prelude::*;
+
 fn main() {
-    let strategy = "AYBXCZ"; // this would be the input in real case
+    let mut file = File::open("input.tx").expect("File not found");
+    let mut strategy = String::new();
+    file.read_to_string(&mut strategy).expect("Failed to read file");
     let mut total_score = 0;
 
     for (i, c) in strategy.chars().enumerate() {
+        if c == '\n' {
+            continue;
+        }
         let opponent_choice = c;
         let my_choice = strategy.chars().nth(i + 1).unwrap();
 
