@@ -1,41 +1,58 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::collections::HashMap;
 
 fn main() {
-    // Open the strategy file
-    let file = File::open("input.tx").unwrap();
+    let file = File::open("input.tx").expect("Could not open file");
     let reader = BufReader::new(file);
-
-    let shape_scores = vec![(1, 'A'), (2, 'B'), (3, 'C'),(1, 'X'), (2, 'Y'), (3, 'Z')];
-    let outcome_scores = vec![(0, 'A'), (3, 'B'), (6, 'C')];
-    let mut shape_map = HashMap::new();
-    let mut outcome_map = HashMap::new();
-
-    for (i, shape) in shape_scores.iter().enumerate() {
-        shape_map.insert(shape.1, i);
-    }
-
-    for (i, outcome) in outcome_scores.iter().enumerate() {
-        outcome_map.insert(outcome.1, i);
-    }
 
     let mut total_score = 0;
     for line in reader.lines() {
-        let line = line.unwrap();
-        let chars: Vec<&str> = line.split_whitespace().collect();
-        let opponent_shape = shape_map[&chars[0].chars().next().unwrap()];
-        let player_shape = shape_map[&chars[1].chars().next().unwrap()];
-        let outcome = match (opponent_shape, player_shape) {
-            (0, 4) => 'C',
-            (1, 5) => 'C',
-            (2, 3) => 'C',
-            (_, _) if opponent_shape == player_shape => 'B',
-            (_, _) => 'A',
+        let line = line.expect("Could not read line");
+        let parts: Vec<&str> = line.split_whitespace().collect();
+        let opponent = parts[0];
+        let my_guess = parts[1];
+
+        let opponent_move = match opponent {
+            "A" => "Rock",
+            "B" => "Paper",
+            "C" => "Scissors",
+            _ => panic!("Invalid opponent move"),
         };
-        let score = shape_scores[opponent_shape].0 + outcome_scores[outcome_map[&outcome]].0;
-        total_score += score;
+
+        let my_move = match my_guess {
+            "X" => "Rock",
+            "Y" => "Paper",
+            "Z" => "Scissors",
+            _ => panic!("Invalid my move"),
+        };
+
+        // Check the result of the game and update the total score
+        if opponent_move == my_move {
+            total_score += 3;
+            match my_guess {
+                "X" => total_score += 1,
+                "Y" => total_score += 2,
+                "Z" => total_score += 3,
+                _ => {}
+            }
+        } else if (opponent_move == "Rock" && my_move == "Scissors") || (opponent_move == "Scissors" && my_move == "Paper") || (opponent_move == "Paper" && my_move == "Rock") {
+            total_score += 0;
+            match my_guess {
+                "X" => total_score += 1,
+                "Y" => total_score += 2,
+                "Z" => total_score += 3,
+                _ => {}
+            }
+        } else {
+            total_score += 6;
+            match my_guess {
+                "X" => total_score += 1,
+                "Y" => total_score += 2,
+                "Z" => total_score += 3,
+                _ => {}
+            }
+        }
     }
 
-    println!("Total score: {}", total_score);
+    println!("Total Score: {}", total_score);
 }
