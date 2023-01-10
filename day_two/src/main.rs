@@ -7,12 +7,10 @@ fn main() {
     file.read_to_string(&mut strategy).expect("Failed to read file");
     let mut total_score = 0;
 
-    for (i, c) in strategy.chars().enumerate() {
-        if c == '\n' {
-            continue;
-        }
-        let opponent_choice = c;
-        let my_choice = strategy.chars().nth(i + 1).unwrap();
+    let inputs: Vec<&str> = strategy.split_whitespace().collect();
+    for i in (0..inputs.len()).step_by(2) {
+        let opponent_choice = inputs[i].chars().next().unwrap();
+        let my_choice = inputs[i+1].chars().next().unwrap();
 
         let (my_score, outcome) = match opponent_choice {
             'A' => {
