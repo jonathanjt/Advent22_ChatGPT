@@ -1,49 +1,40 @@
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::{BufRead, BufReader};
+use std::collections::HashMap;
 
 fn main() {
-    let mut file = File::open("input.tx").expect("File not found");
-    let mut strategy = String::new();
-    file.read_to_string(&mut strategy).expect("Failed to read file");
+    // Open the strategy file
+    let file = File::open("input.tx").unwrap();
+    let reader = BufReader::new(file);
+
+    let shape_scores = vec![(1, 'A'), (2, 'B'), (3, 'C'),(1, 'X'), (2, 'Y'), (3, 'Z')];
+    let outcome_scores = vec![(0, 'A'), (3, 'B'), (6, 'C')];
+    let mut shape_map = HashMap::new();
+    let mut outcome_map = HashMap::new();
+
+    for (i, shape) in shape_scores.iter().enumerate() {
+        shape_map.insert(shape.1, i);
+    }
+
+    for (i, outcome) in outcome_scores.iter().enumerate() {
+        outcome_map.insert(outcome.1, i);
+    }
+
     let mut total_score = 0;
-
-    let inputs: Vec<&str> = strategy.split_whitespace().collect();
-    for i in (0..inputs.len()).step_by(2) {
-        let opponent_choice = inputs[i].chars().next().unwrap();
-        let my_choice = inputs[i+1].chars().next().unwrap();
-
-        let (my_score, outcome) = match opponent_choice {
-            'A' => {
-                if my_choice == 'X' {
-                    (1, 0) // loss
-                } else if my_choice == 'Y' {
-                    (2, 6) // win
-                } else {
-                    (3, 3) // draw
-                }
-            }
-            'B' => {
-                if my_choice == 'X' {
-                    (1, 6) // win
-                } else if my_choice == 'Y' {
-                    (2, 0) // loss
-                } else {
-                    (3, 3) // draw
-                }
-            }
-            'C' => {
-                if my_choice == 'X' {
-                    (1, 3) // draw
-                } else if my_choice == 'Y' {
-                    (2, 3) // draw
-                } else {
-                    (3, 0) // loss
-                }
-            }
-            _ => panic!("Invalid input"),
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let chars: Vec<&str> = line.split_whitespace().collect();
+        let opponent_shape = shape_map[&chars[0].chars().next().unwrap()];
+        let player_shape = shape_map[&chars[1].chars().next().unwrap()];
+        let outcome = match (opponent_shape, player_shape) {
+            (0, 4) => 'C',
+            (1, 5) => 'C',
+            (2, 3) => 'C',
+            (_, _) if opponent_shape == player_shape => 'B',
+            (_, _) => 'A',
         };
-
-        total_score += my_score + outcome;
+        let score = shape_scores[opponent_shape].0 + outcome_scores[outcome_map[&outcome]].0;
+        total_score += score;
     }
 
     println!("Total score: {}", total_score);
