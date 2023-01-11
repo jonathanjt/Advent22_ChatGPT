@@ -73,12 +73,12 @@ goes exactly according to your strategy guide?
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-fn update_score(my_guess: &str, base_points: i32) -> i32 {
+fn update_score(my_guess: &str, outcome: &str, base_points: i32) -> i32 {
     let mut score = base_points;
-    match my_guess {
-        "X" => score += 1,
-        "Y" => score += 2,
-        "Z" => score += 3,
+    match (my_guess, outcome) {
+        ("X", "Lose") => score += 1,
+        ("Y", "Draw") => score += 2,
+        ("Z", "Win") => score += 3,
         _ => {}
     }
     score
@@ -112,20 +112,20 @@ fn main() {
         // Check the result of the game and update the total score
         if my_guess == "Y" {
             if opponent_move == my_move {
-                total_score += update_score(my_guess, 3);
+                total_score += update_score(my_guess, "Draw", 3);
             } else {
-                total_score += update_score(my_guess, 0);
+                total_score += update_score(my_guess, "Draw", 0);
             }
         } else {
-            if opponent_move == my_move {
-                total_score += update_score(my_guess, 0);
-            } else if (opponent_move == "Rock" && my_move == "Scissors") || (opponent_move == "Scissors" && my_move == "Paper") || (opponent_move == "Paper" && my_move == "Rock") {
-                total_score += update_score(my_guess, 0);
-            } else {
-                total_score += update_score(my_guess, 6);
-            }
+            let outcome = match (opponent_move, my_move) {
+                ("Rock", "Scissors") | ("Scissors", "Paper") | ("Paper", "Rock") => "Lose",
+                (o, m) if o == m => "Draw",
+                _ => "Win",
+            };
+            total_score += update_score(my_guess, outcome, 0);
         }
     }
     println!("Total Score: {}", total_score);
 }
+
 
