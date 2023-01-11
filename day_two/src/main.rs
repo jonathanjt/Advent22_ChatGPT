@@ -101,21 +101,21 @@ fn main() {
 
         let my_move_score = match opponent_move {
             "A" => match desired_outcome {
-                "X" => 2,
-                "Y" => 1,
-                "Z" => 1,
+                "X" => 3, //loss, scissors
+                "Y" => 1, //tie, rock
+                "Z" => 2, //win, paper
                 _ => panic!("Invalid desired outcome")
             },
             "B" => match desired_outcome {
-                "X" => 1,
-                "Y" => 2,
-                "Z" => 1,
+                "X" => 1, //loss, rock
+                "Y" => 2, //tie, paper
+                "Z" => 3, //win, scissors
                 _ => panic!("Invalid desired outcome")
             },
             "C" => match desired_outcome {
-                "X" => 3,
-                "Y" => 3,
-                "Z" => 1,
+                "X" => 2, //loss, paper
+                "Y" => 3, //tie, scissors
+                "Z" => 1, //win, rock
                 _ => panic!("Invalid desired outcome")
             },
             _ => panic!("Invalid opponent move"),
