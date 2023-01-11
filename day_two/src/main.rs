@@ -67,6 +67,13 @@ Now that you're correctly decrypting the ultra top secret strategy guide, you wo
 
 Following the Elf's instructions for the second column, what would your total score be if everything
 goes exactly according to your strategy guide?
+
+ChatGPT's performance - 5 out of 10. It sucks at writing even this slightly complex Rust code. In
+order for it to arrive at the correct Rust implementation of the first part, I had to restate the
+problem in much more direct, algorithmic based language. The second part however, was abject failure,
+it could not properly generate a solution to the second part. It could perform the steps
+linguistically and arrive at the right answer, but when asked to generate code to that effect, it
+could not generate code that would compute the correct answer.
  */
 
 
