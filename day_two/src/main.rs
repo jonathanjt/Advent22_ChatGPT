@@ -76,63 +76,57 @@ linguistically and arrive at the right answer, but when asked to generate code t
 could not generate code that would compute the correct answer.
  */
 
-
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-
-fn update_score(my_guess: &str, outcome: &str, base_points: i32) -> i32 {
-    let mut score = base_points;
-    match (my_guess, outcome) {
-        ("X", "Lose") => score += 1,
-        ("Y", "Draw") => score += 2,
-        ("Z", "Win") => score += 3,
-        _ => {}
-    }
-    score
-}
+use std::fs;
+use std::io::BufRead;
 
 fn main() {
-    let file = File::open("input.tx").expect("Could not open file");
-    let reader = BufReader::new(file);
-
     let mut total_score = 0;
-    for line in reader.lines() {
-        let line = line.expect("Could not read line");
-        let parts: Vec<&str> = line.split_whitespace().collect();
-        let opponent = parts[0];
-        let my_guess = parts[1];
+    let input = fs::File::open("input.tx").unwrap();
+    let reader = std::io::BufReader::new(input);
 
-        let opponent_move = match opponent {
-            "A" => "Rock",
-            "B" => "Paper",
-            "C" => "Scissors",
+    for line in reader.lines() {
+        let game = line.unwrap();
+        let parts: Vec<&str> = game.split(" ").collect();
+        let opponent_move = parts[0];
+        let desired_outcome = parts[1];
+
+        let mut score = 0;
+        // Compute the outcome score
+        match desired_outcome {
+            "X" => score += 0,
+            "Y" => score += 3,
+            "Z" => score += 6,
+            _ => panic!("Invalid desired outcome"),
+        }
+
+        let my_move_score = match opponent_move {
+            "A" => match desired_outcome {
+                "X" => 2,
+                "Y" => 1,
+                "Z" => 1,
+                _ => panic!("Invalid desired outcome")
+            },
+            "B" => match desired_outcome {
+                "X" => 1,
+                "Y" => 2,
+                "Z" => 1,
+                _ => panic!("Invalid desired outcome")
+            },
+            "C" => match desired_outcome {
+                "X" => 3,
+                "Y" => 3,
+                "Z" => 1,
+                _ => panic!("Invalid desired outcome")
+            },
             _ => panic!("Invalid opponent move"),
         };
 
-        let my_move = match my_guess {
-            "X" => "Rock",
-            "Y" => "Paper",
-            "Z" => "Scissors",
-            _ => panic!("Invalid my move"),
-        };
-
-        // Check the result of the game and update the total score
-        if my_guess == "Y" {
-            if opponent_move == my_move {
-                total_score += update_score(my_guess, "Draw", 3);
-            } else {
-                total_score += update_score(my_guess, "Draw", 0);
-            }
-        } else {
-            let outcome = match (opponent_move, my_move) {
-                ("Rock", "Scissors") | ("Scissors", "Paper") | ("Paper", "Rock") => "Lose",
-                (o, m) if o == m => "Draw",
-                _ => "Win",
-            };
-            total_score += update_score(my_guess, outcome, 0);
-        }
+        score += my_move_score;
+        total_score += score;
     }
-    println!("Total Score: {}", total_score);
+    println!("Final score: {}", total_score);
 }
+
+
 
 
