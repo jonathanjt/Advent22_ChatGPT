@@ -74,6 +74,13 @@ problem in much more direct, algorithmic based language. The second part however
 it could not properly generate a solution to the second part. It could perform the steps
 linguistically and arrive at the right answer, but when asked to generate code to that effect, it
 could not generate code that would compute the correct answer.
+
+update:
+After multiple rounds of correcting the logic of chatgpt's written version of the solution, it
+generated a version that was very close to the correct solution, I just had to modify the values in
+'my_move_score' to assign the correct values. It seems that the AI struggled to follow it's own stated
+logic and in some iterations even it's stated math was incorrect!
+
  */
 
 use std::fs;
