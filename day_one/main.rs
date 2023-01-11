@@ -68,6 +68,9 @@ by these three elves is 45000.
 Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
 
 Your puzzle answer was 206289.
+
+ChatGPT Performance - 9 out of 10 Solution generated directly from the problem story worked with
+minimal feedback and iterations
  */
 
 use std::fs::File;
